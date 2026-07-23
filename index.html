@@ -9,25 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F1F5F9;
+    --paper:#FAFAFA;
     --paper-card:#FFFFFF;
-    --ink:#1E2A35;
-    --ink-soft:#64748B;
-    --brass:#2F6FA8;
-    --brick:#D98C22;
-    --orange:#D98C22;
-    --line:#DCE6EF;
+    --ink:#181818;
+    --ink-soft:#6E6E6E;
+    --brass:#C8102E;
+    --brick:#8E0E22;
+    --orange:#C8102E;
+    --line:#E6E6E6;
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --paper:#121820;
-      --paper-card:#1B232D;
-      --ink:#E8EDF2;
-      --ink-soft:#8FA0B0;
-      --brass:#5B9BD5;
-      --brick:#E8A33D;
-      --orange:#E8A33D;
-      --line:#2A343F;
+      --paper:#141414;
+      --paper-card:#1E1E1E;
+      --ink:#F2F2F2;
+      --ink-soft:#A3A3A3;
+      --brass:#E2142D;
+      --brick:#FF3B30;
+      --orange:#E2142D;
+      --line:#2E2E2E;
     }
   }
   *{box-sizing:border-box;}
@@ -162,7 +162,7 @@
   .row.now::before{
     background:var(--brick);
     border-color:#FFF3EE;
-    box-shadow:0 0 0 4px rgba(217,140,34,.25);
+    box-shadow:0 0 0 4px rgba(200,16,46,.25);
   }
   .now-flag{
     display:inline-block;
@@ -327,6 +327,40 @@
     margin:0 0 18px;
   }
 
+  .pay-banner{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 20px 20px;
+  }
+  .pay-banner .pay-card{
+    background:var(--paper-card);
+    border:2px solid var(--orange);
+    border-radius:14px;
+    padding:14px 18px;
+  }
+  .pay-banner.paid .pay-card{
+    border-color:var(--brass);
+  }
+  .pay-text{
+    margin:0 0 10px;
+    font-size:14.5px;
+    font-weight:600;
+  }
+  .pay-check{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    user-select:none;
+  }
+  .pay-check input{
+    width:17px; height:17px;
+    accent-color:var(--brass);
+    cursor:pointer;
+  }
+
   footer{
     max-width:760px;
     margin:56px auto 0;
@@ -348,6 +382,16 @@
   <h1>Convivencia en Solavieya</h1>
   <p class="subtitle">Código de acceso: 4206 · Wifi: Solavieya01</p>
 </header>
+
+<div class="pay-banner" id="payBanner">
+  <div class="pay-card">
+    <p class="pay-text" id="payText"></p>
+    <label class="pay-check">
+      <input type="checkbox" id="payCheckbox">
+      Ya he pagado la convivencia
+    </label>
+  </div>
+</div>
 
 <nav class="sections" id="sectionNav">
   <button data-modal="modal-clases">Clases</button>
@@ -679,6 +723,36 @@
   modalBackdrop.addEventListener('click', closeModals);
   document.querySelectorAll('.modal-close').forEach(b => b.addEventListener('click', closeModals));
   document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModals(); });
+
+  // Recordatorio de pago
+  const payMessages = [
+    '💸 Alberto Masó no cobra en abrazos',
+    '👀 Alguien por aquí todavía no ha pagado...',
+    '🙏 Se reza a gusto, pero milagros en el pago no se esperan',
+    '🎒 Si estás disfrutando, haz tu ingreso pronto',
+    '📿 Si cobrara Blanes aceptaríamos tabaco, pero no es el caso',
+    '🏔️ Solavieya es preciosa, pero no se paga sola (tb puedes comprar un jabón)',
+    '🔔 Ding dong, recordatorio: acuérdate pagar. Marca la casilla cuando lo hagas.'
+  ];
+  const paidMessage = '✅ Pagado. ¡A seguir disfrutando!';
+
+  const payBanner = document.getElementById('payBanner');
+  const payText = document.getElementById('payText');
+  const payCheckbox = document.getElementById('payCheckbox');
+
+  function updatePayBanner(){
+    const paid = localStorage.getItem('convivencia_pagado') === '1';
+    payCheckbox.checked = paid;
+    payBanner.classList.toggle('paid', paid);
+    payText.textContent = paid
+      ? paidMessage
+      : payMessages[Math.floor(Math.random() * payMessages.length)];
+  }
+  payCheckbox.addEventListener('change', () => {
+    localStorage.setItem('convivencia_pagado', payCheckbox.checked ? '1' : '0');
+    updatePayBanner();
+  });
+  updatePayBanner();
 </script>
 
 </body>
